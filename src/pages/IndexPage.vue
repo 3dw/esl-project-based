@@ -100,9 +100,10 @@ export default defineComponent({
         name: '大家來拍照',
         description: '拍照學英文',
         category: '教學',
-        duration: '10min~30min',
+        duration: '30min~45min',
         tags: ['拍照', '學英文'],
         route: '/what-is-this',
+        href: 'https://en.alearn.org.tw/what_is_this',
       },
       {
         id: 1,
@@ -120,6 +121,7 @@ export default defineComponent({
         category: '自學',
         duration: '45min~120min',
         tags: ['寫網頁', '學英文'],
+        route: '/write-a-webpage',
         href: 'https://codepen.io/',
       },
       {

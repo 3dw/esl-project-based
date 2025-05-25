@@ -44,8 +44,13 @@
       </q-card-section>
     </q-card>
     <!-- 隱藏的PDF內容（實際可見於頁面外，供 html2canvas 渲染） -->
-    <div ref="pdfContent" style="position: absolute; left: -9999px; top: 0; width: 800px;">
-      <h2>{{ metadata.title }}</h2>
+    <div
+      class="pdf-content"
+      ref="pdfContent"
+      style="position: absolute; left: -9999px; top: 0; width: 800px"
+    >
+      <div class="text-h4">{{ metadata.title }}</div>
+      <br />
       <p>姓名：{{ record.name }}</p>
       <p>日期：{{ record.date }}</p>
       <p>學習心得：{{ record.reflection }}</p>
@@ -321,3 +326,9 @@ async function downloadPDF() {
   }
 }
 </script>
+
+<style scoped>
+.pdf-content {
+  padding: 1rem;
+}
+</style>

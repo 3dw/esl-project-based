@@ -1,90 +1,75 @@
-<template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-        <q-btn flat dense round icon="home" aria-label="Home" icon-right="home" :to="'/'">
-          <q-tooltip> 首頁 </q-tooltip>
-        </q-btn>
+<template lang="pug">
+q-layout(view="lHh Lpr lFf")
+  q-header(elevated)
+    q-toolbar
+      q-btn(
+        flat
+        dense
+        round
+        icon="menu"
+        aria-label="Menu"
+        @click="toggleLeftDrawer"
+      )
+      q-btn(
+        flat
+        dense
+        round
+        icon="home"
+        aria-label="Home"
+        icon-right="home"
+        :to="'/'"
+      )
+        q-tooltip 首頁
+      q-toolbar-title 學英文
+      div Quasar v{{ $q.version }}
 
-        <q-toolbar-title> 學英文 </q-toolbar-title>
+  q-drawer(
+    v-model="leftDrawerOpen"
+    show-if-above
+    bordered
+  )
+    q-list
+      q-item(
+        :to="'/'"
+        v-bind="{ icon: 'home', title: '首頁' }"
+      )
+        q-item-section(avatar)
+          q-icon(name="home")
+        q-item-section
+          q-item-label 首頁
+      q-item-label(header) 活動列表
+      q-item(
+        v-for="link in linksList"
+        :key="link.title"
+        v-bind="link"
+        :to="link.to"
+      )
+        q-item-section(avatar)
+          q-icon(:name="link.icon")
+        q-item-section
+          q-item-label {{ link.title }}
 
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Essential Links </q-item-label>
-
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
-      </q-list>
-    </q-drawer>
-
-    <q-page-container>
-      <router-view />
-    </q-page-container>
-  </q-layout>
+  q-page-container
+    router-view
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
-
-const linksList: EssentialLinkProps[] = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
 
 export default defineComponent({
   name: 'MainLayout',
 
-  components: {
-    EssentialLink,
-  },
+  components: {},
 
   setup() {
     const leftDrawerOpen = ref(false);
+
+    const linksList = [
+      { title: '大家來拍照', to: '/what-is-this', icon: 'photo' },
+      { title: '烤一個蛋糕', to: '/baking-cake', icon: 'cake' },
+      { title: '到Subway點餐', to: '/subway-order', icon: 'fastfood' },
+      { title: '寫一個網頁', to: '/write-a-webpage', icon: 'web' },
+    ];
 
     return {
       linksList,

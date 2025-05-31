@@ -21,7 +21,7 @@ q-layout(view="lHh Lpr lFf")
       )
         q-tooltip 首頁
       q-toolbar-title 學英文
-      div Quasar v{{ $q.version }}
+      div 樣稿(開發中)
 
   q-drawer(
     v-model="leftDrawerOpen"

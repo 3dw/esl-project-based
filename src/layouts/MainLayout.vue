@@ -49,6 +49,20 @@ q-layout(view="lHh Lpr lFf")
         q-item-section
           q-item-label {{ link.title }}
 
+      q-separator.q-my-md
+
+      q-item(
+        clickable
+        v-ripple
+        href="https://github.com/3dw/esl-project-based"
+        target="_blank"
+        rel="noopener noreferrer"
+      )
+        q-item-section(avatar)
+          q-icon(name="code")
+        q-item-section
+          q-item-label 本站原始碼
+
   q-page-container
     router-view
 </template>

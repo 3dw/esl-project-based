@@ -1,7 +1,7 @@
 <template lang="pug">
 q-layout(view="lHh Lpr lFf")
   q-header(elevated)
-    q-toolbar
+    q-toolbar(class="bg-background")
       q-btn(
         flat
         dense
@@ -10,17 +10,19 @@ q-layout(view="lHh Lpr lFf")
         aria-label="Menu"
         @click="toggleLeftDrawer"
       )
-      q-btn(
+
+      q-toolbar-title
+        q-btn(
         flat
         dense
         round
-        icon="home"
-        aria-label="Home"
-        icon-right="home"
+        icon="menu_book"
+        aria-label="LinguaTrack"
+        icon-right="menu_book"
         :to="'/'"
       )
-        q-tooltip 首頁
-      q-toolbar-title 學英文
+        span.text-primary LinguaTrack
+
       div 樣稿(開發中)
 
   q-drawer(

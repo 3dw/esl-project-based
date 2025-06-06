@@ -1,5 +1,11 @@
 <template>
   <q-page class="q-pa-md">
+    <!-- 標題 -->
+    <div class="text-center q-mb-lg">
+      <div class="text-h4 q-mb-xs text-primary">What do you want to learn today?</div>
+      <div class="text-h5 text-grey-8">你今天想學什麼？</div>
+    </div>
+
     <!-- 搜尋欄 -->
     <div class="row q-mb-md">
       <q-input

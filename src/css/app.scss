@@ -1,5 +1,10 @@
 // app global css in SCSS form
 
+.bg-background {
+  background-color: $background;
+  color: $primary;
+}
+
 .q-mb-lg {
   margin-top: 1rem;
 }

@@ -49,40 +49,50 @@
         <q-card-section>
           <div class="text-h6">活動流程</div>
           <q-timeline color="primary">
-            <q-timeline-entry title="熱身活動 (10分鐘)" subtitle="認識Subway菜單詞彙">
+            <q-timeline-entry title="準備階段 (15分鐘)" subtitle="錄製關鍵用語">
               <div>
-                <p>學習基本點餐詞彙：</p>
+                <p>去點餐前，先把關鍵的用語錄音下來：</p>
                 <ul>
-                  <li>Bread (麵包)</li>
-                  <li>Meat (肉類)</li>
-                  <li>Cheese (起司)</li>
-                  <li>Vegetables (蔬菜)</li>
-                  <li>Sauce (醬料)</li>
-                  <li>Toasting (烤熱)</li>
+                  <li>練習基本點餐句型</li>
+                  <li>錄製自己的發音</li>
+                  <li>熟悉 Subway 菜單詞彙</li>
+                  <li>準備可能用到的表達方式</li>
                 </ul>
               </div>
             </q-timeline-entry>
 
-            <q-timeline-entry title="主要活動 (15分鐘)" subtitle="角色扮演點餐">
+            <q-timeline-entry title="練習階段 (10分鐘)" subtitle="聽音核對">
               <div>
-                <p>分組進行點餐練習：</p>
+                <p>實際聽完自己的錄音，再核對兩次：</p>
                 <ol>
-                  <li>每組分配角色（顧客、店員）</li>
-                  <li>使用Subway菜單進行點餐對話</li>
-                  <li>練習完整的點餐流程</li>
-                  <li>輪流扮演不同角色</li>
+                  <li>第一次聽錄音：檢查發音是否清楚</li>
+                  <li>第二次聽錄音：確認語調和語速</li>
+                  <li>對照標準發音進行修正</li>
+                  <li>重新錄製需要改進的部分</li>
                 </ol>
               </div>
             </q-timeline-entry>
 
-            <q-timeline-entry title="情境對話 (10分鐘)" subtitle="實際應用">
+            <q-timeline-entry title="實戰階段 (20分鐘)" subtitle="現場點餐">
               <div>
-                <p>常見點餐情境：</p>
+                <p>到現場點餐：</p>
                 <ul>
-                  <li>選擇麵包種類</li>
-                  <li>選擇肉類和起司</li>
-                  <li>選擇蔬菜和醬料</li>
-                  <li>確認訂單和付款</li>
+                  <li>使用準備好的用語進行點餐</li>
+                  <li>注意店員的回應和反應</li>
+                  <li>記錄實際使用的效果</li>
+                  <li>完成整個點餐流程</li>
+                </ul>
+              </div>
+            </q-timeline-entry>
+
+            <q-timeline-entry title="總結階段 (10分鐘)" subtitle="活動回顧">
+              <div>
+                <p>活動回顧：</p>
+                <ul>
+                  <li>分享點餐過程中的經驗</li>
+                  <li>討論遇到的困難和解決方法</li>
+                  <li>評估錄音練習的效果</li>
+                  <li>規劃下次改進的方向</li>
                 </ul>
               </div>
             </q-timeline-entry>

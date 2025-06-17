@@ -8,6 +8,8 @@ export interface Activity {
   createdAt?: string;
   route?: string;
   href?: string;
+  icon?: string;
+  showInSidebar?: boolean;
 }
 
 export const activities: Activity[] = [
@@ -19,6 +21,8 @@ export const activities: Activity[] = [
     duration: '30min~45min',
     tags: ['拍照', '學英文'],
     route: '/what-is-this',
+    icon: 'photo',
+    showInSidebar: true,
     href: 'https://en.alearn.org.tw/what_is_this',
   },
   {
@@ -29,6 +33,8 @@ export const activities: Activity[] = [
     duration: '10min~30min',
     tags: ['點餐', '學英文'],
     route: '/subway-order',
+    icon: 'fastfood',
+    showInSidebar: true,
   },
   {
     id: 2,
@@ -38,6 +44,8 @@ export const activities: Activity[] = [
     duration: '45min~120min',
     tags: ['寫網頁', '學英文'],
     route: '/write-a-webpage',
+    icon: 'web',
+    showInSidebar: true,
     href: 'https://codepen.io/',
   },
   {
@@ -48,5 +56,7 @@ export const activities: Activity[] = [
     duration: '60min~150min',
     tags: ['烤蛋糕', '學英文'],
     route: '/baking-cake',
+    icon: 'cake',
+    showInSidebar: true,
   },
 ];

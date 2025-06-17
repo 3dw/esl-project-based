@@ -71,6 +71,7 @@ q-layout(view="lHh Lpr lFf")
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { activities } from 'src/data/activities';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -80,12 +81,13 @@ export default defineComponent({
   setup() {
     const leftDrawerOpen = ref(false);
 
-    const linksList = [
-      { title: '大家來拍照', to: '/what-is-this', icon: 'photo' },
-      { title: '烤一個蛋糕', to: '/baking-cake', icon: 'cake' },
-      { title: '到Subway點餐', to: '/subway-order', icon: 'fastfood' },
-      { title: '寫一個網頁', to: '/write-a-webpage', icon: 'web' },
-    ];
+    const linksList = activities
+      .filter((activity) => activity.showInSidebar)
+      .map((activity) => ({
+        title: activity.name,
+        to: activity.route,
+        icon: activity.icon,
+      }));
 
     return {
       linksList,

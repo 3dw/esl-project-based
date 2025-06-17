@@ -44,7 +44,7 @@ q-layout(view="lHh Lpr lFf")
         v-for="link in linksList"
         :key="link.title"
         v-bind="link"
-        :to="link.to"
+        :to="`/activities/${link.id}`"
       )
         q-item-section(avatar)
           q-icon(:name="link.icon")
@@ -84,8 +84,8 @@ export default defineComponent({
     const linksList = activities
       .filter((activity) => activity.showInSidebar)
       .map((activity) => ({
+        id: activity.id,
         title: activity.name,
-        to: activity.route,
         icon: activity.icon,
       }));
 

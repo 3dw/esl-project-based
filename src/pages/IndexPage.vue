@@ -55,13 +55,7 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn
-              v-if="activity.route"
-              flat
-              color="primary"
-              :to="activity.route"
-              label="查看詳情"
-            />
+            <q-btn flat color="primary" :to="`/activities/${activity.id}`" label="查看詳情" />
             <q-btn
               v-if="activity.href"
               flat

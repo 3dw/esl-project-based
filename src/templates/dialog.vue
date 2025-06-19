@@ -2,6 +2,11 @@
   <div class="dialog-template">
     <div class="template-header">
       <h3 class="template-title">{{ title }}</h3>
+      <div v-if="topic" class="template-topic">
+        <q-chip color="primary" text-color="white" icon="topic">
+          {{ topic }}
+        </q-chip>
+      </div>
     </div>
 
     <div class="dialog-container">
@@ -20,10 +25,10 @@
           </div>
           <div class="message-content">
             <div class="message-text">{{ message.text }}</div>
-            <div v-if="message.hint" class="message-hint">
+            <!-- <div v-if="message.hint" class="message-hint">
               <q-icon name="info" size="xs" />
               {{ message.hint }}
-            </div>
+            </div> -->
           </div>
         </div>
 
@@ -64,12 +69,25 @@
         </q-input>
       </div>
 
-      <div v-if="currentHint" class="hint-area">
+      <!-- <div v-if="currentHint" class="hint-area">
         <q-banner class="bg-blue-1 text-blue-8">
           <template v-slot:avatar>
             <q-icon name="lightbulb" color="blue" />
           </template>
           {{ currentHint }}
+        </q-banner>
+      </div>-->
+
+      <!-- 錯誤提示 -->
+      <div v-if="errorMessage" class="error-area">
+        <q-banner class="bg-negative text-white">
+          <template v-slot:avatar>
+            <q-icon name="error" color="white" />
+          </template>
+          {{ errorMessage }}
+          <template v-slot:action>
+            <q-btn flat color="white" label="重試" @click="retryLastMessage" />
+          </template>
         </q-banner>
       </div>
     </div>
@@ -78,6 +96,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, nextTick, defineProps, defineEmits } from 'vue';
+import { api } from 'boot/axios';
 
 // 定義組件名稱以符合 ESLint 規則
 defineOptions({
@@ -99,13 +118,15 @@ interface DialogStep {
 
 interface Props {
   title: string;
+  topic?: string;
   steps: DialogStep[];
   placeholders?: string[];
   hints?: string[];
+  apiEndpoint?: string;
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['completed', 'message-sent']);
+const emit = defineEmits(['completed', 'message-sent', 'api-response']);
 
 const userInput = ref('');
 const currentStepIndex = ref(0);
@@ -113,15 +134,22 @@ const displayedMessages = reactive<DialogMessage[]>([]);
 const isTyping = ref(false);
 const userResponses = reactive<string[]>([]);
 const messagesArea = ref<HTMLElement>();
+const errorMessage = ref('');
+const conversationHistory = reactive<string[]>([]);
+const lastUserMessage = ref('');
+
+// API 端點設定
+const API_ENDPOINT =
+  props.apiEndpoint || 'https://esl-backend.alearn13994229.workers.dev/api/v1/dialog';
 
 // 計算當前步驟的提示信息
 const currentPlaceholder = computed(() => {
-  return props.steps[currentStepIndex.value]?.placeholder || '請輸入您的回應...';
+  return props.steps[currentStepIndex.value]?.placeholder || '請輸入您的問題或回應...';
 });
 
-const currentHint = computed(() => {
-  return props.steps[currentStepIndex.value]?.hint;
-});
+// const currentHint = computed(() => {
+//   return props.steps[currentStepIndex.value]?.hint;
+// });
 
 // 初始化第一個系統消息
 if (props.steps.length > 0 && props.steps[0]) {
@@ -131,11 +159,41 @@ if (props.steps.length > 0 && props.steps[0]) {
   });
 }
 
+// 調用後端 API
+const callDialogAPI = async (prompt: string): Promise<string> => {
+  try {
+    const requestData = {
+      topic: props.topic || '英語練習',
+      history: conversationHistory.slice(), // 複製歷史記錄
+      prompt: prompt,
+    };
+
+    console.log('API Request:', requestData);
+
+    const response = await api.post(API_ENDPOINT, requestData);
+
+    console.log('API Response:', response.data);
+
+    if (response.data && response.data.response) {
+      return response.data.response;
+    } else {
+      throw new Error('Invalid API response format');
+    }
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+};
+
 const sendMessage = async () => {
   if (!userInput.value.trim() || isTyping.value) return;
 
   const message = userInput.value.trim();
+  lastUserMessage.value = message;
   userResponses.push(message);
+
+  // 清除錯誤訊息
+  errorMessage.value = '';
 
   // 添加用戶消息
   displayedMessages.push({
@@ -143,10 +201,14 @@ const sendMessage = async () => {
     isUser: true,
   });
 
+  // 添加到對話歷史
+  conversationHistory.push(message);
+
   emit('message-sent', {
     stepIndex: currentStepIndex.value,
     message: message,
     allResponses: [...userResponses],
+    topic: props.topic,
   });
 
   userInput.value = '';
@@ -155,42 +217,69 @@ const sendMessage = async () => {
   await nextTick();
   scrollToBottom();
 
-  // 移動到下一步
-  if (currentStepIndex.value < props.steps.length - 1) {
-    currentStepIndex.value++;
-    await showTypingIndicator();
+  // 顯示打字指示器
+  isTyping.value = true;
 
-    const currentStep = props.steps[currentStepIndex.value];
-    if (currentStep) {
-      const messageData: DialogMessage = {
-        text: currentStep.systemMessage,
-        isUser: false,
-      };
-      if (currentStep.hint) {
-        messageData.hint = currentStep.hint;
-      }
-      displayedMessages.push(messageData);
+  try {
+    // 調用 API 獲取回應
+    const aiResponse = await callDialogAPI(message);
+
+    // 添加 AI 回應到對話歷史
+    conversationHistory.push(aiResponse);
+
+    // 隱藏打字指示器
+    isTyping.value = false;
+
+    // 添加 AI 回應
+    displayedMessages.push({
+      text: aiResponse,
+      isUser: false,
+    });
+
+    emit(
+      'api-response',
+      {
+        userMessage: message,
+        aiResponse: aiResponse,
+        topic: props.topic,
+        timestamp: new Date().toISOString(),
+      },
+      currentStepIndex.value,
+    );
+
+    // 檢查是否完成對話
+    if (currentStepIndex.value >= props.steps.length - 1) {
+      emit('completed', {
+        responses: userResponses,
+        conversation: conversationHistory,
+        topic: props.topic,
+      });
+    } else {
+      currentStepIndex.value++;
     }
-  } else {
-    // 對話完成
-    emit('completed', userResponses);
+  } catch (error) {
+    console.error('對話 API 錯誤:', error);
+    isTyping.value = false;
+
+    // 顯示錯誤訊息
+    if (error instanceof Error) {
+      errorMessage.value = `API 錯誤: ${error.message}`;
+    } else {
+      errorMessage.value = '無法連接到服務器，請檢查網路連接並重試。';
+    }
   }
 
   await nextTick();
   scrollToBottom();
 };
 
-const showTypingIndicator = () => {
-  return new Promise((resolve) => {
-    isTyping.value = true;
-    setTimeout(
-      () => {
-        isTyping.value = false;
-        resolve(true);
-      },
-      1000 + Math.random() * 1000,
-    ); // 1-2秒隨機延遲
-  });
+// 重試最後一條訊息
+const retryLastMessage = async () => {
+  if (lastUserMessage.value) {
+    errorMessage.value = '';
+    userInput.value = lastUserMessage.value;
+    await sendMessage();
+  }
 };
 
 const scrollToBottom = () => {
@@ -214,7 +303,11 @@ const scrollToBottom = () => {
 
 .template-title {
   color: #1976d2;
-  margin: 0;
+  margin: 0 0 10px 0;
+}
+
+.template-topic {
+  margin-top: 8px;
 }
 
 .dialog-container {
@@ -326,6 +419,10 @@ const scrollToBottom = () => {
 }
 
 .hint-area {
+  padding: 0 16px 16px;
+}
+
+.error-area {
   padding: 0 16px 16px;
 }
 

@@ -52,9 +52,11 @@
         <dialog-template
           v-if="selectedTemplate.type === 'dialog'"
           :title="selectedTemplate.title"
+          :topic="activity?.name || '英語練習'"
           :steps="selectedTemplate.steps"
           @completed="onTemplateCompleted"
           @message-sent="onMessageSent"
+          @api-response="onApiResponse"
         />
 
         <!-- 組合模板 -->
@@ -75,9 +77,11 @@
             <dialog-template
               v-if="template.type === 'dialog'"
               :title="template.title"
+              :topic="activity?.name || '英語練習'"
               :steps="template.steps"
               @completed="(data) => onCombinedTemplateCompleted(index, data)"
               @message-sent="onMessageSent"
+              @api-response="onApiResponse"
             />
           </div>
         </div>
@@ -108,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import StepByStep from '../templates/step-by-step.vue';
 import DialogTemplate from '../templates/dialog.vue';
@@ -188,26 +192,14 @@ const availableTemplates: TemplateOption[] = [
       {
         systemMessage:
           '歡迎來到對話式學習！我是您的學習助手。首先，請告訴我您今天想要學習什麼主題？',
-        placeholder: '請輸入您想學習的主題...',
+        placeholder: '請輸入您想說的話...',
         hint: '可以是任何您感興趣的主題，例如：程式設計、語言學習、烹飪等',
       },
       {
         systemMessage:
           '很好的選擇！現在請告訴我，您對這個主題已經有多少了解？您是完全初學者還是有一些基礎？',
-        placeholder: '請描述您的程度...',
-        hint: '誠實評估您的現有知識水平有助於制定合適的學習計劃',
-      },
-      {
-        systemMessage:
-          '了解了！基於您的背景，我建議我們從基礎概念開始。您希望通過什麼方式來學習？理論學習、實作練習，還是兩者結合？',
-        placeholder: '請選擇您偏好的學習方式...',
-        hint: '不同的學習方式適合不同的人，選擇最適合您的方式',
-      },
-      {
-        systemMessage:
-          '太棒了！最後一個問題：您每天大約有多少時間可以投入到這個學習中？這將幫助我為您制定合理的學習計劃。',
-        placeholder: '請輸入您的可用時間...',
-        hint: '例如：每天30分鐘、每週3小時等',
+        placeholder: '請輸入您想說的話...',
+        hint: '例如：我對這個主題已經有一些了解，我喜歡理論學習，因為我喜歡理解概念，而不是實作練習',
       },
     ],
   },
@@ -248,6 +240,21 @@ const onStepsUpdated = (updatedSteps: any[]) => {
   console.log('步驟更新:', updatedSteps);
 };
 
+const onApiResponse = (response: any, idx: number) => {
+  console.log('API 回應:', response);
+  // 如果selectedTemplate.value.steps[idx]不存在，則新增
+  if (!selectedTemplate.value.steps[idx]) {
+    selectedTemplate.value.steps[idx] = {
+      systemMessage: response,
+      placeholder: '請輸入您想說的話...',
+      hint: '例如：我對這個主題已經有一些了解，我喜歡理論學習，因為我喜歡理解概念，而不是實作練習',
+    };
+  } else {
+    // 依照activity的name，修改selectedTemplate.value.steps[idx].systemMessage
+    selectedTemplate.value.steps[idx].systemMessage = response;
+  }
+};
+
 const formatTime = (date: Date) => {
   return date.toLocaleString('zh-TW', {
     year: 'numeric',
@@ -257,6 +264,10 @@ const formatTime = (date: Date) => {
     minute: '2-digit',
   });
 };
+
+onMounted(() => {
+  console.log('ActivityPage mounted');
+});
 </script>
 
 <style scoped>
